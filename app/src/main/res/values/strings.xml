@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SunShine</string>
+    <string name="hello_world">Hello world!</string>
+
+
+    <string name="AppSunShine"></string>
+    <string name="city">San Francisco</string>
+    <string name="city2">San Diego</string>
+    <string name="temp">90F</string>
+    <string name="temp2">35F</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_refresh" translate="false">Refresh</string>
+    <string name="title_activity_detail">Details</string>
+    <string name="title_activity_settings">Settings</string>
+
+</resources>
