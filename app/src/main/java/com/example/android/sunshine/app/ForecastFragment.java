@@ -5,9 +5,11 @@ package com.example.android.sunshine.app;
  */
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,20 +49,10 @@ public class ForecastFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-
-        String[] forecastArray = {
-                "Today -Sunny - 88/63",
-                "Tomorrow - Foggy - 70/40",
-                "Weds - Cloudy - 72/64",
-                "Thurs - Asteroids - 89/27",
-                "Fri - Heavy Rain - 64/56",
-                "Sat - Sunny - 90/70",
-                "San - Sunny - 98/80"
-        };
-
-        List<String> weekForecast = new ArrayList<String>(
-                Arrays.asList(forecastArray));
-        mForecastAdapter = new ArrayAdapter<String>(getActivity(), R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
+        mForecastAdapter = new ArrayAdapter<String>(getActivity(),
+                R.layout.list_item_forecast,
+                R.id.list_item_forecast_textview,
+                new ArrayList<String>());
         ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -94,17 +86,16 @@ public class ForecastFragment extends Fragment {
         Log.v("ForecastFragment:onOptionsItemSelected", "I got clicked!!  " + item);
         int id = item.getItemId();
         if(id == R.id.action_refresh){
-            FetchWheatherTask wheatherTask = new FetchWheatherTask();
-            wheatherTask.execute("94043");
+            updateWeather();
             return true;
 
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public class FetchWheatherTask extends AsyncTask<String, Void, String[]> {
+    public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
-        private final String LOG_TAG = FetchWheatherTask.class.getSimpleName();
+        private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
 
         @Override
         protected String[] doInBackground(String... params) {
@@ -206,8 +197,18 @@ public class ForecastFragment extends Fragment {
 
         }
     }
+       private void updateWeather(){
+           FetchWeatherTask weatherTask = new FetchWeatherTask();
+           SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+           String location = prefs.getString(getString(R.string.pref_location_key),
+                   getString(R.string.pref_location_default));
+           weatherTask.execute(location);
 
-
-
+       }
+    @Override
+    public void onStart(){
+        super.onStart();
+        updateWeather();
+    }
 
 }
